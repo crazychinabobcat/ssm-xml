@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- 配置mybatis -->
+<configuration>
+
+    <!-- 配置别名 -->
+    <typeAliases>
+        <package name="com.lynx.ssm.domain"/>
+    </typeAliases>
+    
+    <!-- 引入mr.li.entity包下的user.mapper.xml文件，意思为：将此xml文件配置到mybatis下，
+    由mybatis框架最终执行，在mr.li.entity包下还可引入其他类的xml映射文件，最终都统一由mybatis执行 -->
+    <mappers>
+        <!-- 第一种：xml方式连接数据库-->
+          <mapper resource="user.mapper.xml"/>
+          <mapper resource="product.mapper.xml"/>
+          <mapper resource="order.mapper.xml"/>
+          <mapper resource="user.mapper.xml"/>
+          <mapper resource="role.mapper.xml"/>
+          <mapper resource="permission.mapper.xml"/>
+
+    </mappers> 
+</configuration>

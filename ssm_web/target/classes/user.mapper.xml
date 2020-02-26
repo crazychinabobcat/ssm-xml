@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lynx.ssm.dao.IUserDao">
+
+	<!--查找所有用户-->
+	<select id="findAll" parameterType="String" resultType="com.lynx.ssm.domain.UserInfo">
+		select * from users
+	</select>
+
+	<!--增加用户-->
+	<insert id="saveUser">
+		insert into users(email,username,password,phoneNum,status) values(#{email},#{username},#{password},#{phoneNum},#{status})
+	</insert>
+
+
+	<!--根据id查询用户所属角色和所对应权限-->
+	<resultMap id="findByidUser" type="com.lynx.ssm.domain.UserInfo">
+		<id column="id" property="id"></id>
+		<result column="username" property="username"></result>
+		<result column="email" property="email"></result>
+		<result column="password" property="password"></result>
+		<result column="phoneNum" property="phoneNum"></result>
+		<result column="status" property="status"></result>
+		<collection property="roles" ofType="com.lynx.ssm.domain.Role">
+			<id column="id" property="id"></id>
+			<result column="roleName" property="roleName"></result>
+			<result column="roleDesc" property="roleDesc"></result>
+		</collection>
+		<collection property="permissions" ofType="com.lynx.ssm.domain.Permission">
+			<id column="id" property="id"></id>
+			<result column="permissionName" property="permissionName"></result>
+			<result column="url" property="url"></result>
+		</collection>
+	</resultMap>
+
+
+	<select id="findByid" resultMap="findByidUser">
+	select
+	u.id,
+	u.email,
+	u.username,
+	u.password,
+	u.phonenum,
+	u.status,
+	ur.userid,
+	ur.roleid,
+	r.id,
+	r.rolename,
+	r.roledesc,
+	rp.permissionid,
+	 rp.roleid,
+	 p.id,
+	 p.permissionname,
+	 p.url
+ 	from users  u
+	left join  USERS_ROLE ur on u.id = ur.userid
+	left join role r on r.id = ur.roleid
+	left join role_permission rp on r.id = rp.roleid
+	left join permission p on p.id =  rp.permissionid
+	where u.id=#{userid}
+	</select>
+
+
+	<!--根据用户id查询可以添加的角色-->
+	<select id="findOtherRoles" parameterType="String" resultType="com.lynx.ssm.domain.Role">
+		select * from role where id not in(select roleId from users_role where userId=#{userId})
+	</select>
+
+	<insert id="addRoleToUser">
+		insert into users_role(userId,roleId) values(#{userId},#{roleId})
+	</insert>
+</mapper>

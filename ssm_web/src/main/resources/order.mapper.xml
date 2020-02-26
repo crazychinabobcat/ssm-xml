@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lynx.ssm.dao.IOrderDao">
+
+    <resultMap id="OrderMapper" type="com.lynx.ssm.domain.Order" >
+        <id column="id" property="id"></id>
+        <result column="orderNum" property="orderNum"></result>
+        <result column="orderTime" property="orderTime"></result>
+        <result column="orderStatus" property="orderStatus"></result>
+        <result column="peopleCount" property="peopleCount"></result>
+        <result column="payType" property="payType"></result>
+        <result column="orderDesc" property="orderDesc"></result>
+        <result column="productid" property="productid"></result>
+        <!--关联关系映射-->
+        <collection property="product" ofType="com.lynx.ssm.domain.Product">
+            <id column="id" property="id"></id>
+            <result column="productNum" property="productNum"></result>
+            <result column="productName" property="productName"></result>
+            <result column="cityName" property="cityName"></result>
+            <result column="departureTime" property="departureTime"></result>
+            <result column="productPrice" property="productPrice"></result>
+            <result column="productDesc" property="productDesc"></result>
+            <result column="productStatus" property="productStatus"></result>
+        </collection>
+    </resultMap>
+
+    <!--分页查询全部订单-->
+    <select id="findAll" parameterType="String" resultMap="OrderMapper">
+    select
+  o.id,
+  o.ordernum,
+  o.ordertime,
+  o.peoplecount,
+  o.orderdesc,
+  o.paytype,
+  o.orderstatus,
+  o.productid,
+  o.memberid,
+  p.productnum,
+  p.productname,
+  p.cityname,
+  p.departuretime,
+  p.departuretimestr,
+  p.productprice,
+  p.productdesc,
+  p.productstatus,
+  p.productstatusstr
+  from orders o
+  left outer join  product p  on   p.id = o.productid
+    </select>
+
+
+    <!--删除订单-->
+    <delete id="deleteOrder">
+      delete from orders where id = #{id}
+    </delete>
+
+
+
+    <!--根据id查询订单-->
+    <resultMap id="findByidOrder" type="com.lynx.ssm.domain.Order">
+        <id column="id" property="id"></id>
+        <result column="orderNum" property="orderNum"></result>
+        <result column="orderTime" property="orderTime"></result>
+        <result column="orderStatus" property="orderStatus"></result>
+        <result column="peopleCount" property="peopleCount"></result>
+        <result column="payType" property="payType"></result>
+        <result column="orderDesc" property="orderDesc"></result>
+        <result column="productid" property="productid"></result>
+        <!--关联关系映射-->
+        <collection property="product" ofType="com.lynx.ssm.domain.Product">
+            <id column="id" property="id"></id>
+            <result column="productNum" property="productNum"></result>
+            <result column="productName" property="productName"></result>
+            <result column="cityName" property="cityName"></result>
+            <result column="departureTime" property="departureTime"></result>
+            <result column="productPrice" property="productPrice"></result>
+            <result column="productDesc" property="productDesc"></result>
+            <result column="productStatus" property="productStatus"></result>
+        </collection>
+        <!--关联关系映射-->
+        <collection property="member" ofType="com.lynx.ssm.domain.Member">
+            <id column="id" property="id"></id>
+            <result column="name" property="name"></result>
+            <result column="nickname" property="nickname"></result>
+            <result column="phoneNum" property="phoneNum"></result>
+            <result column="email" property="email"></result>
+        </collection>
+        <!--关联关系映射-->
+        <collection property="travellers" ofType="com.lynx.ssm.domain.Traveller">
+            <id column="id" property="id"></id>
+            <result column="name" property="name"></result>
+            <result column="sex" property="sex"></result>
+            <result column="phoneNum" property="phoneNum"></result>
+            <result column="credentialsType" property="credentialsType"></result>
+            <result column="credentialsNum" property="credentialsNum"></result>
+            <result column="travellerType" property="travellerType"></result>
+        </collection>
+    </resultMap>
+
+    <select id="findByid" resultMap="findByidOrder">
+      select
+       o.id,
+       o.ordernum,
+       o.ordertime,
+       o.peoplecount,
+       o.orderdesc,
+       o.paytype,
+       o.orderstatus,
+       o.productid,
+       o.memberid,
+       p.id,
+       p.productnum,
+       p.productname,
+       p.cityname,
+       p.departuretime,
+       p.departuretimestr,
+       p.productprice,
+       p.productdesc,
+       p.productstatus,
+       p.productstatusstr,
+       m.id,
+       m.name,
+       m.nickname,
+       m.phonenum,
+       m.email,
+       ot.orderid,
+       ot.travellerid,
+       t.id,
+       t.name,
+       t.sex,
+       t.phonenum,
+       t.credentialstype,
+       t.credentialsnum,
+       t.travellertype
+    from orders o
+    left join product p on o.productid =p.id
+    left join member m on  o.memberid =m.id
+    left join order_traveller ot on o.id = ot.orderid
+    left join traveller t on ot.travellerid = t.id
+    where o.id=#{orderid}
+    </select>
+
+</mapper>
